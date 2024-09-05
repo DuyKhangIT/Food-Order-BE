@@ -63,8 +63,8 @@ exports.login = async (req, res) => {
     // Tạo JWT token
     const token = jwt.sign(
       { userId: user._id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' } // Thời gian hết hạn của token
+      process.env.JWT_SECRET
+      //{ expiresIn: '1h' } // Thời gian hết hạn của token
     );
 
     // Trả về response
