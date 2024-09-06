@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
+const { status } = require('express/lib/response');
 const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
@@ -24,9 +25,15 @@ exports.register = async (req, res) => {
 
     // Tạo và trả về JWT token
     const payload = { user: { id: user.id } };
-    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
+    jwt.sign(payload, process.env.JWT_SECRET, (err, token) => {
       if (err) throw err;
-      res.json({ token });
+      res.json({
+        user: {
+          id: user.id,
+          email: user.email,
+          password: user.password,
+        },
+      });
     });
   } catch (err) {
     console.error(err.message);
@@ -44,8 +51,8 @@ exports.login = async (req, res) => {
     // Nếu user không tồn tại
     if (!user) {
       return res.status(400).json({
-        status: false,
-        message: 'Invalid credentials',
+        statusCode: 400,
+        message: 'Người dùng không tồn tại',
       });
     }
 
@@ -55,8 +62,8 @@ exports.login = async (req, res) => {
     // Nếu password không đúng
     if (!isMatch) {
       return res.status(400).json({
-        status: false,
-        message: 'Invalid credentials',
+        statusCode: 400,
+        message: 'Mật khẩu không chính xác',
       });
     }
 
@@ -69,14 +76,11 @@ exports.login = async (req, res) => {
 
     // Trả về response
     return res.json({
-      status: true,
-      data: {
-        token,
+      token,
         user: {
           id: user._id,
           email: user.email,
         },
-      },
     });
 
   } catch (err) {
