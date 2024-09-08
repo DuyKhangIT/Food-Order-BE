@@ -88,3 +88,39 @@ exports.login = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+
+exports.changePassword = async (req, res) => {
+  const { email, oldPassword, newPassword } = req.body;
+
+  try {
+     // Kiểm tra xem người dùng có tồn tại không
+     let user = await User.findOne({ email });
+     if (!user) {
+       return res.status(400).json({ statusCode: 400, message: 'Người dùng không tồn tại' });
+     }
+ 
+     // Kiểm tra mật khẩu cũ có đúng không
+     const isMatch = await bcrypt.compare(oldPassword, user.password);
+     if (!isMatch) {
+       return res.status(400).json({ statusCode: 400, message: 'Mật khẩu cũ không chính xác' });
+     }
+ 
+     // Kiểm tra xem mật khẩu mới có khác mật khẩu cũ không
+     const isSamePassword = await bcrypt.compare(newPassword, user.password);
+     if (isSamePassword) {
+       return res.status(400).json({ statusCode: 400, message: 'Mật khẩu mới không được trùng với mật khẩu cũ' });
+     }
+ 
+     // Mã hóa mật khẩu mới
+     const salt = await bcrypt.genSalt(10);
+     user.password = await bcrypt.hash(newPassword, salt);
+ 
+     // Lưu người dùng với mật khẩu mới
+     await user.save(); 
+
+    res.status(200).json({ status: true, message: 'Đổi mật khẩu thành công'});
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Lỗi máy chủ');
+  }
+};
