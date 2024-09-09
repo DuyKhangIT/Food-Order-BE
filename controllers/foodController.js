@@ -35,7 +35,7 @@ exports.createFood = async (req, res) => {
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ message: 'Lỗi máy chủ' });
+    res.status(500).send('Lỗi máy chủ');
   }
 };
 
@@ -49,6 +49,6 @@ exports.getAllFoods = async (req, res) => {
       res.status(200).json({foods: foodsList});
     } catch (err) {
       console.error(err.message);
-      res.status(500).json({ message: 'Lỗi máy chủ' });
+      res.status(500).send('Lỗi máy chủ');
     }
   };

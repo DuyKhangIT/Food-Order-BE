@@ -19,7 +19,7 @@ exports.createCategory = async (req, res) => {
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ message: 'Lỗi máy chủ' });
+    res.status(500).send('Lỗi máy chủ');
   }
 };
 
@@ -31,6 +31,6 @@ exports.getCategories = async (req, res) => {
       res.status(200).json({categories: categoriesList});
     } catch (err) {
       console.error(err.message);
-      res.status(500).json({ message: 'Lỗi máy chủ' });
+      res.status(500).send('Lỗi máy chủ');
     }
   };
