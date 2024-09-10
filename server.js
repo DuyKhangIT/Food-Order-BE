@@ -22,6 +22,8 @@ app.use('/api/food', require('./routes/food'));
 
 app.use('/api/favorite', require('./routes/favorite'));
 
+app.use('/api/basket', require('./routes/basket'));
+
 // Cấu hình cổng
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
